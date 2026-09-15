@@ -14,7 +14,8 @@ import {
   EyeOff, 
   LogOut,
   HelpCircle,
-  CheckCircle2
+  CheckCircle2,
+  ExternalLink
 } from 'lucide-react';
 import { MenuItem, CategoryId } from '../types';
 import { CATEGORIES } from '../data/initialMenu';
@@ -698,14 +699,36 @@ export const BackOfficeModal: React.FC<BackOfficeModalProps> = ({
               </table>
             </div>
 
-            <div className="flex items-center justify-between text-xs text-stone-400 pt-2 border-t border-stone-800">
-              <span>Total Menu Items: {menu.length}</span>
-              <button
-                onClick={onClose}
-                className="px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold cursor-pointer"
-              >
-                Close Back-Office
-              </button>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-400 pt-2 border-t border-stone-800">
+              <div className="text-[11px] text-stone-500">
+                Created &amp; Developed by <span className="text-stone-300 font-semibold">Sharada Rupasinghe</span> (GM, Arachchi Restaurant, Hotel White House &amp; Chamy Group)
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://www.linkedin.com/in/sharadarupasinghe"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-[#5db2e6] hover:underline flex items-center gap-1"
+                >
+                  <ExternalLink className="w-3 h-3" /> LinkedIn
+                </a>
+                <span className="text-stone-700">•</span>
+                <a
+                  href="https://fb.com/sharadarupasinghe"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-[#68a5f8] hover:underline flex items-center gap-1"
+                >
+                  <ExternalLink className="w-3 h-3" /> Facebook
+                </a>
+                <span className="text-stone-700">•</span>
+                <button
+                  onClick={onClose}
+                  className="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         )}

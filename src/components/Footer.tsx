@@ -209,6 +209,42 @@ export const Footer: React.FC<FooterProps> = ({
             <span>Instant QR Digital Menu</span>
           </div>
         </div>
+
+        {/* Creator & Leadership Credits */}
+        <div className="mt-4 pt-4 border-t border-stone-900 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left text-xs text-stone-400 bg-black/40 rounded-xl px-4 py-3 border border-amber-950/40">
+          <div className="space-y-0.5">
+            <div className="text-stone-300 font-medium">
+              Created & Developed by <span className="font-bold text-amber-300">Sharada Rupasinghe</span>
+            </div>
+            <div className="text-[11px] text-stone-500">
+              General Manager of <span className="text-stone-400 font-semibold">Arachchi Restaurant</span>, <span className="text-stone-400 font-semibold">Hotel White House</span> &amp; <span className="text-stone-400 font-semibold">Chamy Group of companies</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <a
+              href="https://www.linkedin.com/in/sharadarupasinghe"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0077b5]/15 hover:bg-[#0077b5]/30 border border-[#0077b5]/40 text-[#5db2e6] hover:text-[#8acbf1] text-[11px] font-semibold transition-all cursor-pointer shadow-sm"
+              title="Sharada Rupasinghe on LinkedIn"
+            >
+              <ExternalLink className="w-3 h-3" />
+              <span>LinkedIn</span>
+            </a>
+
+            <a
+              href="https://fb.com/sharadarupasinghe"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1877f2]/15 hover:bg-[#1877f2]/30 border border-[#1877f2]/40 text-[#68a5f8] hover:text-[#9bc2fc] text-[11px] font-semibold transition-all cursor-pointer shadow-sm"
+              title="Sharada Rupasinghe on Facebook"
+            >
+              <ExternalLink className="w-3 h-3" />
+              <span>fb.com/sharadarupasinghe</span>
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );
