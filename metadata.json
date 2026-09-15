@@ -1,0 +1,6 @@
+{
+  "name": "Arachchi Restaurant Anuradhapura - QR Digital Menu",
+  "description": "Instant QR digital menu, AI dish recommendations, live price management, multilingual support, and customer reviews for Arachchi Restaurant Anuradhapura.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

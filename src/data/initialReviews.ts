@@ -1,0 +1,40 @@
+import { CustomerReview } from '../types';
+
+export const INITIAL_REVIEWS: CustomerReview[] = [
+  {
+    id: 'rev_1',
+    name: 'Dilshan Perera',
+    overallRating: 5,
+    foodRating: 5,
+    serviceRating: 5,
+    ambianceRating: 4.8,
+    tableNumber: 'Table 7',
+    comment: 'The Arachchi Kulls 4pax was gigantic and absolutely delicious! Butter chicken, hot butter cuttlefish, and that crab curry were top notch. Best dining spot in Anuradhapura after visiting Atamasthana!',
+    tags: ['Arachchi Kulls', 'Hot Butter Cuttlefish', 'Generous Portion', 'Must Visit'],
+    date: 'Yesterday',
+  },
+  {
+    id: 'rev_2',
+    name: 'Elena & Mark (Germany)',
+    overallRating: 5,
+    foodRating: 5,
+    serviceRating: 4.9,
+    ambianceRating: 5,
+    tableNumber: 'Table 12',
+    comment: 'We visited Anuradhapura for 2 days and ate here both nights! The Garlic Naan, Cheese Chicken Kottu, and Fresh Mango Juice were incredible. Staff was welcoming and scanning the menu QR on the phone made ordering effortless.',
+    tags: ['Tourists Favorite', 'Cheese Kottu', 'Fresh Juices', 'Super Fast'],
+    date: '3 days ago',
+  },
+  {
+    id: 'rev_3',
+    name: 'Kavindu Jayasuriya',
+    overallRating: 4.8,
+    foodRating: 5,
+    serviceRating: 4.7,
+    ambianceRating: 4.8,
+    tableNumber: 'Table 3',
+    comment: 'Hot Butter Cuttlefish (HBC) here is authentic Sri Lankan style — crispy, buttery, with fried chili and capsicum crunch. Paired with Sea Food fried rice was heaven.',
+    tags: ['Authentic HBC', 'Fried Rice', 'Crispy & Spicy'],
+    date: '5 days ago',
+  },
+];
