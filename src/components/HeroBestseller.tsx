@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { Flame, Sparkles, Trophy, Users, ChefHat } from 'lucide-react';
 import { MenuItem, SupportedLanguage } from '../types';
 import { TRANSLATIONS } from '../data/translations';
@@ -20,7 +21,13 @@ export const HeroBestseller: React.FC<HeroBestsellerProps> = ({
   const primaryBestseller = bestsellers.find((b) => b.id === 'spec_kulls_2pax') || bestsellers[0];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#24170e] via-[#1a1109] to-[#100b07] border border-amber-600/30 p-4 sm:p-6 shadow-2xl mb-8">
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#24170e] via-[#1a1109] to-[#100b07] border border-amber-600/30 p-4 sm:p-6 shadow-2xl mb-8"
+    >
       {/* Subtle warm backdrop glow */}
       <div className="absolute -right-16 -top-16 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -left-16 -bottom-16 w-64 h-64 bg-yellow-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -121,6 +128,6 @@ export const HeroBestseller: React.FC<HeroBestsellerProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

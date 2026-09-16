@@ -1,24 +1,51 @@
 import React, { useState } from 'react';
-import { Phone, MapPin, Clock, Star, Share2, ShieldCheck, Heart, Wifi, ExternalLink, MessageCircle, Check } from 'lucide-react';
+import {
+  Phone,
+  MapPin,
+  Clock,
+  Star,
+  Share2,
+  ShieldCheck,
+  Wifi,
+  WifiOff,
+  ExternalLink,
+  MessageCircle,
+  Check,
+  Sparkles,
+  QrCode,
+  Globe,
+} from 'lucide-react';
 import { Logo } from './Logo';
 import { SupportedLanguage } from '../types';
-import { TRANSLATIONS } from '../data/translations';
+import { LANGUAGE_OPTIONS, TRANSLATIONS } from '../data/translations';
 
 interface FooterProps {
   currentLang: SupportedLanguage;
+  onLanguageChange?: (lang: SupportedLanguage) => void;
+  tableNumber?: string | null;
+  onOpenAiModal?: () => void;
   onOpenFeedback: () => void;
+  onOpenQrModal?: () => void;
   onOpenBackOffice: () => void;
   isOnline: boolean;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   currentLang,
+  onLanguageChange,
+  tableNumber,
+  onOpenAiModal,
   onOpenFeedback,
+  onOpenQrModal,
   onOpenBackOffice,
   isOnline,
 }) => {
   const t = TRANSLATIONS[currentLang];
   const [copiedLink, setCopiedLink] = useState(false);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+
+  const currentLangObj =
+    LANGUAGE_OPTIONS.find((l) => l.code === currentLang) || LANGUAGE_OPTIONS[0];
 
   const googleReviewUrl =
     'https://www.google.com/maps/search/?api=1&query=Arachchi+Restaurant+Jayanthi+Mawatha+Anuradhapura';
@@ -42,7 +69,125 @@ export const Footer: React.FC<FooterProps> = ({
   };
 
   return (
-    <footer className="mt-16 bg-[#120c08] border-t border-amber-900/40 text-stone-300">
+    <footer className="mt-16 bg-[#140e09]/95 backdrop-blur-md border-t border-amber-900/40 text-stone-300 shadow-2xl">
+      {/* 1. Header-Style Quick Nav Ribbon Bar (Same layout & controls as Header) */}
+      <div className="bg-[#100b07] border-b border-amber-900/40">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+          {/* Left: Brand Identity matching Header */}
+          <div className="flex items-center gap-2">
+            <Logo size="md" />
+            {tableNumber && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                {t.table} {tableNumber}
+              </span>
+            )}
+          </div>
+
+          {/* Right: Actions matching Header */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
+            {/* AI Recommender Button */}
+            {onOpenAiModal && (
+              <button
+                id="footer-btn-ai-recommender"
+                onClick={onOpenAiModal}
+                className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-stone-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-900/30 transition-all transform active:scale-95 cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 fill-stone-950/30 animate-pulse" />
+                <span className="hidden xs:inline sm:inline">{t.aiRecommendBtn}</span>
+                <span className="xs:hidden sm:hidden font-extrabold">AI</span>
+              </button>
+            )}
+
+            {/* Reviews Rating Button */}
+            <button
+              id="footer-btn-reviews"
+              onClick={onOpenFeedback}
+              title={t.customerReviews}
+              className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-xl bg-stone-900/80 hover:bg-stone-800 text-amber-300 border border-amber-500/30 text-xs sm:text-sm transition-colors cursor-pointer"
+            >
+              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+              <span className="hidden md:inline font-medium">4.9 ★</span>
+            </button>
+
+            {/* Table QR Stand Generator Button */}
+            {onOpenQrModal && (
+              <button
+                id="footer-btn-qr-modal"
+                onClick={onOpenQrModal}
+                title={t.tableQrBtn}
+                className="p-1.5 sm:p-2 rounded-xl bg-stone-900/80 hover:bg-stone-800 text-amber-400 border border-amber-500/30 transition-colors cursor-pointer"
+              >
+                <QrCode className="w-4 h-4" />
+              </button>
+            )}
+
+            {/* Multilingual Selector */}
+            {onLanguageChange && (
+              <div className="relative">
+                <button
+                  id="footer-btn-language-selector"
+                  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                  className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-stone-900/80 hover:bg-stone-800 text-stone-200 border border-stone-700/60 text-xs sm:text-sm transition-colors cursor-pointer"
+                >
+                  <span className="text-sm">{currentLangObj.flag}</span>
+                  <span className="hidden sm:inline font-medium uppercase text-xs">
+                    {currentLangObj.code}
+                  </span>
+                  <Globe className="w-3.5 h-3.5 text-stone-400" />
+                </button>
+
+                {langDropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setLangDropdownOpen(false)}
+                    />
+                    <div className="absolute right-0 bottom-full mb-2 w-48 rounded-xl bg-[#1d150f] border border-amber-800/50 shadow-2xl py-1 z-50 overflow-hidden">
+                      <div className="px-3 py-1.5 text-[11px] font-semibold text-amber-400/80 border-b border-stone-800">
+                        Select Language / භාෂාව
+                      </div>
+                      {LANGUAGE_OPTIONS.map((lang) => (
+                        <button
+                          key={lang.code}
+                          onClick={() => {
+                            onLanguageChange(lang.code);
+                            setLangDropdownOpen(false);
+                          }}
+                          className={`w-full px-3 py-2 text-left text-xs flex items-center justify-between hover:bg-amber-950/40 transition-colors ${
+                            currentLang === lang.code
+                              ? 'text-amber-400 font-bold bg-amber-950/20'
+                              : 'text-stone-300'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span>{lang.flag}</span>
+                            <span>{lang.label}</span>
+                          </span>
+                          {currentLang === lang.code && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Staff Back Office Entry */}
+            <button
+              id="footer-btn-backoffice"
+              onClick={onOpenBackOffice}
+              title={t.backOffice}
+              className="p-1.5 sm:p-2 rounded-xl bg-stone-900/80 hover:bg-stone-800 text-stone-400 hover:text-amber-300 border border-stone-800 transition-colors cursor-pointer"
+            >
+              <ShieldCheck className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Detailed Footer Content Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Col 1: Identity & Description */}

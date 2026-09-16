@@ -333,7 +333,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
           )
         ) : (
           /* Reviews Feed */
-          <div className="max-h-80 overflow-y-auto space-y-3 pr-1">
+          <div className="max-h-80 overflow-y-auto space-y-3 pr-1.5 custom-scrollbar-modal">
             {reviews.map((rev) => (
               <div
                 key={rev.id}

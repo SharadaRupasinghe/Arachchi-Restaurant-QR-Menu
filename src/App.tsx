@@ -12,12 +12,13 @@ import { BackOfficeModal } from './components/BackOfficeModal';
 import { FeedbackModal } from './components/FeedbackModal';
 import { QrGeneratorModal } from './components/QrGeneratorModal';
 import { Footer } from './components/Footer';
-import { Sparkles, Star, QrCode, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Star, QrCode, CheckCircle2, ArrowUp } from 'lucide-react';
+import { motion, useScroll, useSpring, AnimatePresence } from 'motion/react';
 
 export default function App() {
   // Local or API state
   const [menu, setMenu] = useState<MenuItem[]>(() => {
-    const saved = localStorage.getItem('arachchi_menu_v1');
+    const saved = localStorage.getItem('arachchi_menu_v2');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -61,8 +62,23 @@ export default function App() {
   // Online status
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
+
+  const { scrollY, scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   const t = TRANSLATIONS[currentLang];
+
+  // Track page scroll to show/hide scroll-to-top button
+  useEffect(() => {
+    return scrollY.on('change', (latest) => {
+      setShowScrollTop(latest > 320);
+    });
+  }, [scrollY]);
 
   // Check URL table query param
   useEffect(() => {
@@ -100,7 +116,7 @@ export default function App() {
         const menuList = data.menu || data.data;
         if (data.success && Array.isArray(menuList)) {
           setMenu(menuList);
-          localStorage.setItem('arachchi_menu_v1', JSON.stringify(menuList));
+          localStorage.setItem('arachchi_menu_v2', JSON.stringify(menuList));
         }
       } catch (err) {
         console.log('Using offline cached menu');
@@ -254,7 +270,35 @@ export default function App() {
   const bestsellers = menu.filter((item) => item.isBestseller || item.isTrending);
 
   return (
-    <div className="min-h-screen bg-[#0d0906] text-stone-100 flex flex-col selection:bg-amber-500 selection:text-stone-950 font-sans">
+    <div className="min-h-screen bg-[#0d0906] text-stone-100 flex flex-col selection:bg-amber-500 selection:text-stone-950 font-sans relative">
+      {/* Top Ambient Amber Scroll Reading Progress Bar with Spring Physics */}
+      <div className="fixed top-0 left-0 right-0 h-[3.5px] bg-amber-950/20 z-50 pointer-events-none">
+        <motion.div
+          className="h-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.8)] origin-left"
+          style={{ scaleX }}
+        />
+      </div>
+
+      {/* Floating Scroll-to-Top Button with AnimatePresence & Motion */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            id="btn-scroll-to-top"
+            initial={{ opacity: 0, scale: 0.7, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.7, y: 16 }}
+            whileHover={{ scale: 1.12, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="fixed bottom-20 sm:bottom-8 right-4 sm:right-6 z-40 p-3 rounded-2xl bg-gradient-to-b from-[#2d1b10] to-[#160d07] hover:from-[#3a2315] hover:to-[#22140a] text-amber-300 hover:text-amber-200 border border-amber-500/50 shadow-2xl shadow-black/80 flex items-center justify-center group cursor-pointer"
+            title="Scroll to Top"
+          >
+            <ArrowUp className="w-5 h-5 transition-transform group-hover:-translate-y-0.5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-20 sm:bottom-6 right-4 z-50 px-4 py-2.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-xs sm:text-sm shadow-2xl flex items-center gap-2 animate-bounce">
@@ -336,7 +380,11 @@ export default function App() {
       {/* Footer */}
       <Footer
         currentLang={currentLang}
+        onLanguageChange={handleLanguageChange}
+        tableNumber={tableNumber}
+        onOpenAiModal={() => setIsAiModalOpen(true)}
         onOpenFeedback={() => setIsFeedbackOpen(true)}
+        onOpenQrModal={() => setIsQrModalOpen(true)}
         onOpenBackOffice={() => setIsBackOfficeOpen(true)}
         isOnline={isOnline}
       />

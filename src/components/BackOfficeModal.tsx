@@ -608,7 +608,7 @@ export const BackOfficeModal: React.FC<BackOfficeModalProps> = ({
             </div>
 
             {/* Dishes Price Editing Table */}
-            <div className="overflow-x-auto max-h-[50vh] overflow-y-auto rounded-xl border border-stone-800 bg-stone-950/60">
+            <div className="overflow-x-auto max-h-[50vh] overflow-y-auto rounded-xl border border-stone-800 bg-stone-950/60 custom-scrollbar-modal">
               <table className="w-full text-left text-xs text-stone-300">
                 <thead className="bg-stone-900/80 sticky top-0 text-[11px] uppercase tracking-wider text-stone-400 border-b border-stone-800 z-10">
                   <tr>

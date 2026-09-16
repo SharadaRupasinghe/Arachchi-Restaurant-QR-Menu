@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { Flame, Leaf, Fish, Users, Sparkles, AlertCircle, Share2 } from 'lucide-react';
 import { MenuItem, SupportedLanguage } from '../types';
 import { TRANSLATIONS } from '../data/translations';
@@ -21,9 +22,14 @@ export const DishCard: React.FC<DishCardProps> = ({
   const t = TRANSLATIONS[currentLang];
 
   return (
-    <div
+    <motion.div
       id={`dish-card-${item.id}`}
-      className={`group relative flex flex-col justify-between rounded-xl bg-gradient-to-b from-[#1c140e] to-[#140e09] border transition-all duration-200 p-3.5 sm:p-4 shadow-lg ${
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
+      whileHover={{ y: -3, transition: { duration: 0.15 } }}
+      className={`group relative flex flex-col justify-between rounded-xl bg-gradient-to-b from-[#1c140e] to-[#140e09] border transition-colors duration-200 p-3.5 sm:p-4 shadow-lg ${
         !item.isAvailable
           ? 'opacity-60 border-stone-800'
           : item.isBestseller
@@ -140,6 +146,6 @@ export const DishCard: React.FC<DishCardProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

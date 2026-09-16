@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { motion } from 'motion/react';
 import { Search, Filter, Sparkles, X, ChevronRight, Utensils } from 'lucide-react';
 import { MenuItem, CategoryId, CuisineType, SupportedLanguage } from '../types';
 import { CATEGORIES } from '../data/initialMenu';
@@ -126,7 +127,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         </div>
 
         {/* Cuisine Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 custom-scrollbar-amber">
           {cuisines.map((c) => (
             <button
               key={c}
@@ -208,7 +209,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
       </div>
 
       {/* Category Scrollbar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2.5 pt-0.5 custom-scrollbar-amber">
         <button
           onClick={() => onSelectCategory('all')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
@@ -255,7 +256,15 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
       {groupedCategories ? (
         <div className="space-y-10">
           {groupedCategories.map(({ category, items }) => (
-            <section key={category.id} id={`category-sec-${category.id}`} className="space-y-4">
+            <motion.section
+              key={category.id}
+              id={`category-sec-${category.id}`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.4 }}
+              className="space-y-4"
+            >
               <div className="flex items-center justify-between border-b border-amber-900/30 pb-2">
                 <div className="flex items-baseline gap-2">
                   <h3 className="text-lg sm:text-xl font-serif font-bold text-amber-100 flex items-center gap-2">
@@ -285,7 +294,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                   />
                 ))}
               </div>
-            </section>
+            </motion.section>
           ))}
         </div>
       ) : (
