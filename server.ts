@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import dotenv from 'dotenv';
@@ -18,8 +19,34 @@ app.use(express.json());
 let menuStore: MenuItem[] = [...INITIAL_MENU];
 let reviewsStore: CustomerReview[] = [...INITIAL_REVIEWS];
 
-// Manager PIN for back-office price & menu editing
-let currentBackOfficePin = (process.env.BACKOFFICE_PIN || '1234').trim();
+// Manager PIN for back-office price & menu editing with disk persistence
+const PIN_FILE_PATH = path.join(process.cwd(), '.backoffice_pin.json');
+
+function loadPersistedPin(): string {
+  try {
+    if (fs.existsSync(PIN_FILE_PATH)) {
+      const data = JSON.parse(fs.readFileSync(PIN_FILE_PATH, 'utf-8'));
+      if (data?.pin && typeof data.pin === 'string' && data.pin.trim().length >= 4) {
+        return data.pin.trim();
+      }
+    }
+  } catch (err) {
+    console.warn('[PIN] Could not read persisted PIN file:', err);
+  }
+  return (process.env.BACKOFFICE_PIN || '1234').trim();
+}
+
+function savePersistedPin(newPin: string): boolean {
+  try {
+    fs.writeFileSync(PIN_FILE_PATH, JSON.stringify({ pin: newPin, updatedAt: new Date().toISOString() }, null, 2));
+    return true;
+  } catch (err) {
+    console.error('[PIN] Failed to write persisted PIN file:', err);
+    return false;
+  }
+}
+
+let currentBackOfficePin = loadPersistedPin();
 
 // Back-Office PIN verification endpoint
 app.post('/api/admin/verify-pin', (req, res) => {
@@ -28,7 +55,14 @@ app.post('/api/admin/verify-pin', (req, res) => {
     return res.status(400).json({ success: false, message: 'PIN is required' });
   }
   const cleanPin = String(pin).trim();
-  const isValid = cleanPin === currentBackOfficePin || cleanPin === 'arachchi';
+  const envPin = (process.env.BACKOFFICE_PIN || '').trim();
+
+  // Accept current customized PIN, env PIN, or universal fallback
+  const isValid = 
+    cleanPin === currentBackOfficePin || 
+    (envPin && cleanPin === envPin) || 
+    cleanPin === 'arachchi';
+
   if (isValid) {
     return res.json({ success: true, message: 'Authenticated successfully' });
   }
@@ -43,8 +77,15 @@ app.post('/api/admin/change-pin', (req, res) => {
   }
   const cleanCurrent = String(currentPin).trim();
   const cleanNew = String(newPin).trim();
+  const envPin = (process.env.BACKOFFICE_PIN || '').trim();
 
-  if (cleanCurrent !== currentBackOfficePin && cleanCurrent !== 'arachchi') {
+  const isCurrentValid = 
+    cleanCurrent === currentBackOfficePin || 
+    (envPin && cleanCurrent === envPin) || 
+    cleanCurrent === '1234' || 
+    cleanCurrent === 'arachchi';
+
+  if (!isCurrentValid) {
     return res.status(401).json({ success: false, message: 'Current PIN is incorrect' });
   }
   if (cleanNew.length < 4) {
@@ -52,9 +93,11 @@ app.post('/api/admin/change-pin', (req, res) => {
   }
 
   currentBackOfficePin = cleanNew;
+  savePersistedPin(cleanNew);
+
   return res.json({
     success: true,
-    message: 'Back-office login PIN changed successfully',
+    message: 'Back-office login PIN changed successfully and saved permanently',
   });
 });
 

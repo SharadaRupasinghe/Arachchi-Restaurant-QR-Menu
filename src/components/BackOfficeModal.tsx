@@ -95,23 +95,24 @@ export const BackOfficeModal: React.FC<BackOfficeModalProps> = ({
         return;
       }
       
-      // If server returned invalid PIN
-      const storedLocalPin = getStoredPin();
-      if (pinInput.trim() === storedLocalPin || pinInput.trim() === 'arachchi') {
+      // If server rejected the PIN:
+      // Note: We do NOT fallback to a stale '1234' in localStorage if the server explicitly rejected it,
+      // but we allow 'arachchi' as emergency override.
+      if (pinInput.trim() === 'arachchi') {
         setIsAuthenticated(true);
         setPinError('');
         return;
       }
 
-      setPinError('Incorrect PIN. Default is 1234.');
+      setPinError('Invalid PIN. Please enter your configured manager PIN.');
     } catch (err) {
-      // Offline fallback
+      // Offline fallback when network/server is unavailable
       const storedLocalPin = getStoredPin();
-      if (pinInput.trim() === storedLocalPin || pinInput.trim() === '1234' || pinInput.trim() === 'arachchi') {
+      if (pinInput.trim() === storedLocalPin || pinInput.trim() === 'arachchi') {
         setIsAuthenticated(true);
         setPinError('');
       } else {
-        setPinError('Incorrect PIN. Default is 1234.');
+        setPinError('Offline mode: Could not verify PIN with server.');
       }
     } finally {
       setIsVerifying(false);
@@ -345,15 +346,15 @@ export const BackOfficeModal: React.FC<BackOfficeModalProps> = ({
 
               {showPinHelp && (
                 <div className="mt-2.5 p-3 rounded-xl bg-stone-900/90 border border-amber-900/50 text-left text-xs space-y-1.5 text-stone-300">
-                  <p className="font-semibold text-amber-300">🔑 Changing Your Back-Office Login:</p>
+                  <p className="font-semibold text-amber-300">🔑 Changing & Recovering Your Back-Office Login:</p>
                   <ol className="list-decimal list-inside space-y-1 text-[11px] text-stone-300">
-                    <li>Log in using the default PIN: <code className="bg-black/50 px-1.5 py-0.5 rounded text-amber-300 font-mono">1234</code>.</li>
+                    <li>Log in using your manager PIN (e.g. your configured PIN, or master key <code className="bg-black/50 px-1.5 py-0.5 rounded text-amber-300 font-mono">arachchi</code>).</li>
                     <li>Click the <strong>"Change Login PIN"</strong> button in the top bar.</li>
-                    <li>Enter your current PIN and choose your new private PIN (e.g. 4+ digits or password).</li>
-                    <li>Save changes. Your new PIN will be required for all future logins!</li>
+                    <li>Enter your current PIN and choose your new private PIN (4+ characters).</li>
+                    <li>Save changes. Your new PIN will be permanently saved on the server and required for all future logins!</li>
                   </ol>
                   <p className="text-[10px] text-stone-400 mt-1">
-                    Tip: You can also define <code className="text-amber-300 font-mono">BACKOFFICE_PIN=your_custom_pin</code> in the project Settings / environment variables before deploying to production.
+                    Note: If you have configured <code className="text-amber-300 font-mono">BACKOFFICE_PIN</code> in project settings, it will always be accepted as an authorized manager key.
                   </p>
                 </div>
               )}
