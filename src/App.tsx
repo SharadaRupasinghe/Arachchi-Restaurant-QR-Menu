@@ -18,7 +18,7 @@ import { motion, useScroll, useSpring, AnimatePresence } from 'motion/react';
 export default function App() {
   // Local or API state
   const [menu, setMenu] = useState<MenuItem[]>(() => {
-    const saved = localStorage.getItem('arachchi_menu_v2');
+    const saved = localStorage.getItem('arachchi_menu_v3');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -116,7 +116,7 @@ export default function App() {
         const menuList = data.menu || data.data;
         if (data.success && Array.isArray(menuList)) {
           setMenu(menuList);
-          localStorage.setItem('arachchi_menu_v2', JSON.stringify(menuList));
+          localStorage.setItem('arachchi_menu_v3', JSON.stringify(menuList));
         }
       } catch (err) {
         console.log('Using offline cached menu');
